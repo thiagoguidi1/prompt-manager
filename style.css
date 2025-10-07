@@ -1,0 +1,143 @@
+:root {
+  /* Cores Principais */
+  --color-white: #ffffff;
+
+  /* Cores de Acento */
+  --color-accent-600: #4863f7;
+  --color-accent-500: #7878d7;
+
+  /* Cor de Alerta */
+  --color-alert-600: #ff5c5c;
+
+  /* Tons de Cinza */
+  --color-gray-900: #0d0d0d;
+  --color-gray-800: #111111;
+  --color-gray-700: #1a1a1a;
+  --color-gray-200: #424242;
+  --color-gray-100: #737373;
+}
+
+body,
+input,
+button {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--color-gray-900);
+  color: var(--color-white);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 62px 124px;
+  gap: 32px;
+  background: var(--color-gray-800);
+  border-radius: 32px;
+  box-shadow: 0px 8px 32px rgba(72, 99, 247, 0.08);
+}
+
+.main-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.btn-outline.btn {
+  background: transparent;
+  border: 1.5px solid var(--color-gray-200);
+  color: var(--color-white);
+  padding: 0 20px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+
+.btn-outline.btn:hover {
+  border-color: var(--color-accent-600);
+}
+
+.btn-primary.btn {
+  background: var(--color-accent-600);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  height: 44px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary.btn:hover {
+  background: var(--color-accent-500);
+}
+
+.w-150 {
+  width: 150px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.prompt-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 16px;
+  outline: none;
+  border: none;
+  background: transparent;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.prompt-content {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-gray-100);
+  background: var(--color-gray-700);
+  border-radius: 16px;
+  padding: 32px;
+  min-height: 180px;
+  outline: none;
+  border: none;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .main {
+    padding: 32px 16px;
+  }
+  .prompt-content {
+    padding: 16px;
+  }
+  .prompt-title {
+    font-size: 1.5rem;
+  }
+}
