@@ -34,6 +34,19 @@ body {
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-100);
+  border-radius: 4px;
+}
+
 .app {
   display: flex;
   height: 100vh;
@@ -46,9 +59,8 @@ body {
   flex: 1;
   padding: 62px 124px;
   gap: 32px;
-  background: var(--color-gray-800);
-  border-radius: 32px;
-  box-shadow: 0px 8px 32px rgba(72, 99, 247, 0.08);
+  
+  overflow-y: scroll;
 }
 
 .main-header {
@@ -56,39 +68,40 @@ body {
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
+  width: 100%;
   margin-bottom: 24px;
 }
 
-.btn-outline.btn {
+.btn {
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.btn-outline {
   background: transparent;
-  border: 1.5px solid var(--color-gray-200);
+  border: 0.5px solid var(--color-gray-200);
   color: var(--color-white);
   padding: 0 20px;
   height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  font-size: 16px;
-  cursor: pointer;
-  transition: border 0.2s;
+  gap: 10px;
+  transition: background-color 0.3s;
 }
 
-.btn-outline.btn:hover {
-  border-color: var(--color-accent-600);
+.btn-outline:hover {
+  background-color: var(--color-gray-200);
 }
 
-.btn-primary.btn {
+.btn-primary {
   background: var(--color-accent-600);
   color: var(--color-white);
-  border: none;
-  border-radius: 12px;
-  height: 44px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
+  padding: 0 24px;
 }
 
 .btn-primary.btn:hover {
@@ -105,29 +118,49 @@ body {
 }
 
 .prompt-title {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: var(--color-white);
-  margin-bottom: 16px;
+  font-size: 32px;
+  font-weight: 600;
   outline: none;
-  border: none;
-  background: transparent;
-  line-height: 1.2;
-  letter-spacing: -1px;
 }
 
 .prompt-content {
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-size: 16px;
   color: var(--color-gray-100);
-  background: var(--color-gray-700);
+  background: var(--color-gray-800);
   border-radius: 16px;
   padding: 32px;
   min-height: 180px;
   outline: none;
   border: none;
-  line-height: 1.7;
+  line-height: 32px;
   margin-bottom: 0;
+}
+
+.editable-wrapper {
+  position: relative;
+}
+
+.editable-wrapper::before {
+  content: attr(data-placeholder);
+  position: absolute;
+
+  color: var(--color-gray-200);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.editable-wrapper.is-empty::before {
+  opacity: 1;
+}
+
+#title-wrapper.is-empty {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+#content-wrapper.is-empty {
+  font-size: 16px;
+  font-weight: 400;
 }
 
 @media (max-width: 900px) {
