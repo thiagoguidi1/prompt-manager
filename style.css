@@ -178,7 +178,6 @@ body {
 	width: 400px;
 	height: 100vh;
 	flex-direction: column;
-	gap: 50px;
 	padding: 32px;
 	background-color: var(--color-gray-800);
 	border-right: 0.5px solid var(--color-gray-700);
@@ -188,6 +187,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	margin-bottom: 32px;
 }
 
 .logo {
@@ -200,6 +200,75 @@ body {
 	flex-direction: column;
 	gap: 20px;
 	padding: 24px 20px 0 20px;
+}
+/* Prompt Item (Sidebar List) */
+.prompt-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.prompt-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--color-gray-700);
+	border-radius: 12px;
+	padding: 16px 20px;
+	margin-bottom: 12px;
+	transition: background 0.2s;
+}
+.prompt-item:hover {
+	background: var(--color-gray-800);
+}
+
+.prompt-item-info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	flex: 1;
+	min-width: 0;
+}
+
+.prompt-item-title {
+	font-size: 16px;
+	font-weight: 400;
+	color: var(--color-white);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.prompt-item-description {
+	font-size: 13px;
+	color: var(--color-gray-100);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.btn-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	margin-left: 16px;
+	border-radius: 6px;
+	transition: background 0.2s;
+	height: 32px;
+	width: 32px;
+}
+.btn-icon:hover {
+	background: rgba(255, 92, 92, 0.08);
+}
+
+.icon-trash {
+	width: 20px;
+	height: 20px;
+	stroke: var(--color-alert-600);
 }
 
 .search-container {
@@ -255,4 +324,5 @@ body {
 	width: 100%;
 	border-bottom: 3px solid var(--color-gray-700);
 	margin-top: 8px;
+	margin-bottom: 25px;
 }
