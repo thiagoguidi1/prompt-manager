@@ -12,6 +12,15 @@
 		<title>NLW - Prompts Manager</title>
 	</head>
 	<body>
+		<!--
+		  NLW - Prompt Manager
+		  Arquivo: index.html
+		  Propósito: Estrutura principal da aplicação (sidebar + editor).
+		  Observações rápidas:
+		  - A lista de prompts é populada dinamicamente em `ul#prompt-list` pelo `script.js`.
+		  - O botão de abrir (`#btn-open`) permanece sempre no DOM; a sidebar usa z-index para
+		    sobrepor o botão quando aberta.
+		-->
 		<!-- INÍCIO APP WRAPPER -->
 		<div class="app">
 			<!-- BOTÃO ABRIR MENU (MOBILE) -->
@@ -25,7 +34,8 @@
 				<header class="sidebar-header">
 					<img src="assets/logo.svg" alt="Logo" class="logo" />
 					<button id="btn-collapse" class="icon-button">
-						<img src="assets/collapse.svg" alt="Fechar Menu" class="asdasd" />
+						<!-- botão de colapso usa a classe genérica de ícone para manter estilo consistente -->
+						<img src="assets/collapse.svg" alt="Fechar Menu" class="icon" />
 					</button>
 				</header>
 

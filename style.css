@@ -17,6 +17,13 @@
 	--color-gray-100: #737373;
 }
 
+/*
+	NLW - Prompt Manager (style.css)
+	- Contém as variáveis de cor, estilos globais e regras para a sidebar/lista de prompts.
+	- Nota: a visibilidade do botão `.open-toggle` é controlada por posicionamento e z-index;
+		evitar manipular display via JS para manter consistência entre viewports.
+*/
+
 body,
 input,
 button {
@@ -165,13 +172,29 @@ body {
 	border: none;
 	background: transparent;
 	cursor: pointer;
+	/* tamanho padrão para botões de ícone (alinha open/close) */
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
 }
 
 .open-toggle {
-	position: absolute;
-	top: 62px;
-	left: 62px;
-	display: none;
+	/* Tornar o toggle sempre visível; posicionamento fixo para ficar na viewport */
+	position: fixed;
+	top: 32px;
+	left: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	background: transparent;
+	border: none;
+	border-radius: 8px;
+	z-index: 1000; /* botão fica abaixo da sidebar (sidebar usará z-index maior) */
 }
 
 .sidebar {
@@ -181,6 +204,15 @@ body {
 	padding: 32px;
 	background-color: var(--color-gray-800);
 	border-right: 0.5px solid var(--color-gray-700);
+	position: relative; /* permite z-index funcionar */
+	z-index: 1100; /* sidebar deve ficar acima do botão quando houver sobreposição */
+}
+
+.sidebar.collapsed {
+	width: 0;
+	padding: 0;
+	opacity: 0;
+	transform: translateX(0);
 }
 
 .sidebar-header {
@@ -247,6 +279,7 @@ body {
 	   Ajuste o valor para 1, 2, 3 conforme desejar */
 	display: -webkit-box;
 	-webkit-line-clamp: 2; /* troque para 2 ou 3 para múltiplas linhas */
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -331,4 +364,33 @@ body {
 	border-bottom: 3px solid var(--color-gray-700);
 	margin-top: 8px;
 	margin-bottom: 25px;
+}
+
+@media (max-width: 950px) {
+	.open-toggle {
+		/* adapta um pouco o posicionamento em telas pequenas */
+		left: 20px;
+		z-index: 1000; /* manter abaixo da sidebar (sidebar usa 1100)
+						o sidebar terá posição fixed e idêntico z-index em mobile */
+	}
+
+	.sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100vh;
+		width: 80%;
+		max-width: 300px;
+		transform: translateX(-100%);
+		z-index: 1100;
+	}
+
+	.sidebar.open {
+		transform: translateX(0);
+		transition: transform 0.3s ease-in-out;
+	}
+
+	.main {
+		padding: 24px 32px;
+	}
 }

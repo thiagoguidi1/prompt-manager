@@ -1,3 +1,38 @@
+/*
+	NLW - Prompt Manager (script.js)
+	- Responsável pela lógica do app: persistência (localStorage), renderização da lista
+		de prompts, handlers de UI e utilitários pequenos.
+	- Convenções:
+		* `state` mantém dados em memória
+		* `elements` é um cache dos elementos DOM usados
+		* Evite manipular estilos inline para visibilidade (usar classes/z-index)
+*/
+
+// Debug flag: torne true para habilitar logs adicionais durante desenvolvimento
+const DEBUG = false
+
+// Utilitário para exibir mensagens ao usuário. Atualmente usa alert(), mas
+// centralizar permite trocar por um toast/custom modal no futuro sem alterar
+// o restante do código.
+function showMessage(message) {
+	if (typeof message !== "string") message = String(message)
+	// Por padrão mantemos alert para comportamento conhecido do app.
+	alert(message)
+}
+
+// Função auxiliar de log condicional
+function debugLog(...args) {
+	if (DEBUG && console && console.log) console.log(...args)
+}
+
+// Mensagens centralizadas para facilitar manutenção/i18n
+const MESSAGES = {
+	EMPTY_FIELDS: "Título e conteúdo não podem estar vazios.",
+	SAVED: "Prompt salvo com sucesso!",
+	COPIED: "Conteúdo copiado para a área de transferência!",
+	DELETED: "Prompt deletado com sucesso!",
+}
+
 // Chave usada para armazenar/recuperar dados no localStorage
 // Mantemos uma chave única para não conflitar com outros dados do navegador
 const STORAGE_KEY = "prompts_storage"
@@ -23,7 +58,6 @@ const elements = {
 	btnSave: document.getElementById("btn-save"),
 	list: document.getElementById("prompt-list"),
 	search: document.querySelector(".search-input"),
-	// O botão "Novo Prompt" no HTML possui a classe .new-prompt-btn
 	btnNew: document.querySelector(".new-prompt-btn"),
 	btnCopy: document.getElementById("btn-copy"),
 }
@@ -64,23 +98,47 @@ function attachAllEditableHandlers() {
 // Função para abrir a sidebar
 // Mostra a sidebar (usado no modo mobile) e esconde o botão de abrir
 function openSidebar() {
-	elements.sidebar.style.display = "flex"
-	elements.btnOpen.style.display = "none"
+	// Adiciona a classe 'open' para que o CSS mova a sidebar para a tela
+	if (elements.sidebar) elements.sidebar.classList.add("open")
+	if (elements.sidebar) elements.sidebar.classList.remove("collapsed")
+	// Não manipular estilos inline do botão aqui; a visibilidade será controlada por CSS/z-index
 }
 
 // Esconde a sidebar e mostra o botão de abrir
 function closeSidebar() {
-	elements.sidebar.style.display = "none"
-	elements.btnOpen.style.display = "block"
+	// Remove a classe 'open' e exibe o botão de abrir
+	if (elements.sidebar) elements.sidebar.classList.remove("open")
+	if (elements.sidebar) elements.sidebar.classList.add("collapsed")
+	// Não manipular estilos inline do botão aqui; a visibilidade será controlada por CSS/z-index
 }
 
 // Anexa listeners dos controles da sidebar (abrir/fechar)
 function attachSidebarHandlers() {
-	elements.btnOpen.addEventListener("click", openSidebar)
-	elements.btnCollapse.addEventListener("click", closeSidebar)
+	// Anexa eventos aos botões
+	if (elements.btnOpen) elements.btnOpen.addEventListener("click", openSidebar)
+	if (elements.btnCollapse)
+		elements.btnCollapse.addEventListener("click", closeSidebar)
 
-	// Por padrão a sidebar está visível; escondemos o botão de abrir
-	elements.btnOpen.style.display = "none"
+	// Estado inicial responsivo: em telas pequenas (<950px) queremos que a sidebar
+	// esteja aberta por padrão (para que o usuário veja o conteúdo). Em telas maiores
+	// também mantemos a sidebar visível. Evita inline styles que escondem o botão
+	// quando a página é carregada diretamente em dispositivos pequenos.
+	function setInitialSidebarState() {
+		if (!elements.sidebar) return
+		const small = window.innerWidth < 950
+		if (small) {
+			elements.sidebar.classList.add("open")
+			// Não alterar estilo do botão aqui
+		} else {
+			elements.sidebar.classList.remove("open")
+			// Não alterar estilo do botão aqui
+		}
+	}
+
+	setInitialSidebarState()
+
+	// Ajusta dinamicamente quando o usuário redimensiona a janela
+	window.addEventListener("resize", setInitialSidebarState)
 }
 
 // Salva o prompt atual: valida dados, cria ou atualiza o prompt e persiste
@@ -93,7 +151,7 @@ function save() {
 
 	// Validação mínima: título e conteúdo não vazios
 	if (!title || !hasContent) {
-		alert("Título e conteúdo não podem estar vazios.")
+		showMessage(MESSAGES.EMPTY_FIELDS)
 		return
 	}
 
@@ -119,8 +177,14 @@ function save() {
 	renderList(elements.search.value)
 	// Persiste no localStorage e informa o usuário
 	persist()
-	alert("Prompt salvo com sucesso!")
+	showMessage(MESSAGES.SAVED)
 }
+
+/*
+	persist()
+	- Serializa `state.prompts` e grava no localStorage usando STORAGE_KEY.
+	- Tratamento de erro envolve log no console; em ambientes restritos pode falhar.
+*/
 
 // Persiste o array de prompts no localStorage
 function persist() {
@@ -131,6 +195,13 @@ function persist() {
 	}
 }
 
+/*
+	load()
+	- Lê do localStorage e popula `state.prompts`.
+	- Sempre seta `state.selectedId = null` para garantir estado limpo.
+	- Usa debugLog para emitir dados apenas quando DEBUG=true.
+*/
+
 // Carrega os prompts do localStorage para o estado em memória
 function load() {
 	try {
@@ -138,12 +209,20 @@ function load() {
 		state.prompts = storage ? JSON.parse(storage) : []
 		state.selectedId = null
 
-		// Log para depuração durante desenvolvimento
-		console.log("Prompts carregados:", state.prompts)
+		// Log (condicional) para depuração durante desenvolvimento
+		debugLog("Prompts carregados:", state.prompts)
 	} catch (error) {
 		console.error("Erro ao carregar os prompts:", error)
 	}
 }
+
+/*
+	createPromptItem(prompt)
+	- input: objeto { id, title, content }
+	- output: string HTML para injeção em innerHTML da UL.
+	- Nota: atualmente usa template string; se quiser evitar XSS no futuro
+		é recomendável construir elementos via document.createElement (DOM API).
+*/
 
 // Gera o HTML de um item da lista de prompts
 // Cada item carrega atributos data-id (para identificar) e data-action para distinguir
@@ -164,6 +243,14 @@ function createPromptItem(prompt) {
             </li>
          `
 }
+
+/*
+	renderList(filterText)
+	- Filtra `state.prompts` por título e atualiza `elements.list.innerHTML`.
+	- filterText: string opcional; padrão "".
+	- Edgecases: se `elements.list` não existir, causará erro; index.html deve conter
+		a UL com id "prompt-list".
+*/
 
 // Renderiza a lista de prompts aplicando um filtro por título
 // filterText: string usada para filtrar prompts pelo título
@@ -191,7 +278,7 @@ function copySelected() {
 	try {
 		const content = elements.promptContent
 		navigator.clipboard.writeText(content.innerText)
-		alert("Conteúdo copiado para a área de transferência!")
+		showMessage(MESSAGES.COPIED)
 	} catch (error) {
 		console.error("Erro ao copiar para a área de transferência:", error)
 	}
@@ -235,7 +322,7 @@ elements.list.addEventListener("click", function (event) {
 		state.prompts = state.prompts.filter((p) => p.id !== id)
 		renderList(elements.search.value)
 		persist()
-		alert("Prompt deletado com sucesso!")
+		showMessage(MESSAGES.DELETED)
 		return
 	}
 
