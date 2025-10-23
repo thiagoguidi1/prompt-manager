@@ -242,9 +242,15 @@ body {
 .prompt-item-description {
 	font-size: 13px;
 	color: var(--color-gray-100);
-	white-space: nowrap;
+	/* Usar line-clamp para suportar truncamento mesmo com quebras (<br>)
+	   -webkit-line-clamp limita o número de linhas visíveis
+	   Ajuste o valor para 1, 2, 3 conforme desejar */
+	display: -webkit-box;
+	-webkit-line-clamp: 2; /* troque para 2 ou 3 para múltiplas linhas */
+	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: normal; /* permitir quebras no conteúdo, line-clamp controla o corte */
 }
 
 .btn-icon {
