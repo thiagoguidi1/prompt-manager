@@ -1,7 +1,7 @@
 <h1 id="topo" align="center">Prompt Manager</h1>
 
 <div align="center">
-<img src="./.github/thumbnail.png" alt="Imagem de exemplo">
+<img src=".github/thumbnail.png" alt="Imagem de exemplo">
 </div>
 
 <br>
