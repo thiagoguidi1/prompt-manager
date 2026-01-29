@@ -56,7 +56,7 @@ Esse projeto foi criado no evento NLW Pocket Iniciantes da Rocketseat para apren
 <p>O Layout da aplicação está disponível no Figma:</p>
 
 <a href="https://www.figma.com/community/file/1554529095872857492">
-  <img src="https://img.shields.io/badge/Acessar%20Layout%20-Tal%20Lugar-%2304D361" alt="layout link badge">
+  <img src="https://img.shields.io/badge/Acessar%20Layout%20-Figma-%2304D361" alt="layout link badge">
 </a>
 
 </div>
